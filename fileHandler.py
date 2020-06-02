@@ -15,7 +15,6 @@ Create_by:
 import os
 from tkinter import messagebox
 import xlwt
-import logging
 from tkinter import *
 
 from chardet import detect
@@ -24,6 +23,19 @@ def get_code_type(file):
     with open(file, 'rb+') as f:
         content = f.read()
         return detect(content)['encoding']
+
+
+def get_column(file, start_row, target_column, num, column_name):
+    """"获取一个文件中的指定列，并返回list，第一个元素为column_name"""
+    data = [column_name]
+    with open(file, 'r', encoding=get_code_type(file)) as f:
+        lines = f.readlines()[start_row - 1: start_row + num - 1]
+        for row, line in enumerate(lines, start_row):
+            data.append(float(line.split()[target_column - 1]))
+
+    return data
+
+
 
 
 def handle(source_path, target_path, start_row, target_column, num):
@@ -45,8 +57,8 @@ def handle(source_path, target_path, start_row, target_column, num):
                         try:
                             names.append(line.split()[1])
                         except Exception as e:
-                            messagebox.showinfo(title='错误信息',
-                                                message='文件{0}的第{1}行数据有误,请核对参数和文件'.format(path, r))
+                            # messagebox.showinfo(title='错误信息',
+                            #                     message='文件{0}的第{1}行数据有误,请核对参数和文件'.format(path, r))
                             names.append('')
                             continue
 
@@ -75,8 +87,8 @@ def handle(source_path, target_path, start_row, target_column, num):
                         try:
                             data.append(float(line.split()[int(target_column.get())-1]))
                         except Exception as e:
-                            messagebox.showinfo(title='错误信息',
-                                                message='文件{0}的第{1}行数据有误,请核对参数和文件'.format(path, r))
+                            # messagebox.showinfo(title='错误信息',
+                            #                     message='文件{0}的第{1}行数据有误,请核对参数和文件'.format(path, r))
                             data.append('')
                             continue
 
@@ -134,3 +146,4 @@ btn1 = Button(root, text='确定', command=lambda: handle(source_path, target_pa
 btn1.place(relx=0.65, rely=0.65, relwidth=0.3, relheight=0.1)
 
 root.mainloop()
+
